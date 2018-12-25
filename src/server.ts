@@ -2,8 +2,10 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
 import mongoose from 'mongoose';
-import NodeRouter from './routes/nodeRouter';
 import dotenv from 'dotenv'
+
+import NodeRouter from './routes/nodeRouter';
+import SignRouter from './routes/signRouter';
 
 export default class Server {
 
@@ -19,14 +21,11 @@ export default class Server {
 
         dotenv.config();
         //setup mongoose
-        mongoose.connect(process.env.MONGO_URI)
-            .catch((err :String) => {
-                console.log(err);
-                process.exit(2);
-            });
+
 
         this.app.use(bodyParser.urlencoded({extended : true}));
         this.app.use(bodyParser.json());
+        this.app.use(express.static(path.join(__dirname, "public")));
 
         this.app.set('views',path.join(__dirname,'../views'));
         this.app.set('view engine','pug');
@@ -35,13 +34,18 @@ export default class Server {
     public start(): void {
 
         this.app.listen(process.env.PORT,() => {
-            console.log(`Server started on port ${process.env.PORT}.`)
+            console.log(`Serveur démarré sur le port ${process.env.PORT}.`)
         });
     }
 
     private routes(): void {
         //Déclarer les diffentes routes
         this.app.use('/',NodeRouter);
+        this.app.use('/authentication',SignRouter);
+
+        this.app.all("*", (req,res) => {
+            res.send('404');
+        })
     }
 }
 
