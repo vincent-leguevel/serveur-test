@@ -21,6 +21,12 @@ export default class Server {
 
         dotenv.config();
         //setup mongoose
+        //@ts-ignore
+        mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true})
+            .catch((err :String) => {
+                console.log(err);
+                process.exit(1);
+            });
 
 
         this.app.use(bodyParser.urlencoded({extended : true}));
@@ -29,6 +35,7 @@ export default class Server {
 
         this.app.set('views',path.join(__dirname,'../views'));
         this.app.set('view engine','pug');
+        this.app.set('env',process.env.NODE_ENV);
     }
 
     public start(): void {
