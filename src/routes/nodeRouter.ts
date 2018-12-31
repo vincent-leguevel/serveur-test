@@ -10,8 +10,8 @@ class nodeRouter {
     }
 
     private index(req: Request, res:Response, next:NextFunction) {
-
-        res.render('index', { title: 'Hey', message: 'Hello there!'})
+        console.log(req.user);
+        res.render('index', { title: 'nosServicesEnMieux', message: 'Node Router'})
 
     }
 
